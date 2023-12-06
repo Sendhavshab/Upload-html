@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Html Code Reader</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        #main-heding {
+            text-align: center;
+            color:#eeff15;
+            background:#ff3f15;
+            border-radius:999px;
+        }
+
+        #upload-container {
+            text-align: center;
+            margin-top: 20px;
+            display:flex;
+            flex-direction:column;
+            color:rgb(51,204,51);
+        }
+
+        #preview-container {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+
+        #share-link {
+            margin-top: 20px;
+            text-align: center;
+        }
+        h2{
+            color: blue;
+        }
+        #contact{
+    position:fixed;
+    right:10px;
+    bottom:10px;
+    
+}
+    </style>
+</head>
+<body>
+    <h1 id="main-heding">Code Sharing Platform</h1>
+
+    <div id="upload-container">
+        <label for="htmlFile">Upload HTML File:</label>
+        <input type="file" id="htmlFile" accept=".html">
+        <br>
+        <label for="cssFile">Upload CSS File:</label>
+        <input type="file" id="cssFile" accept=".css">
+    </div>
+
+    <div id="preview-container">
+        <h2>Preview:</h2>
+        <iframe id="previewFrame" width="100%" height="300px" frameborder="0"></iframe>
+    </div>
+
+    <div id="share-link">
+        <h2>Share Link:</h2>
+        <p id="linkText">No link generated yet.</p>
+        <button onclick="copyLink()">Copy Link</button>
+    </div>
+<a id="contact" href="https://t.me/teachten" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/2048px-Telegram_logo.svg.png" alt="Telegram" width="50" height="50">
+    </a>
+    <script>
+        function copyLink() {
+            const linkText = document.getElementById('linkText');
+            const textArea = document.createElement('textarea');
+            textArea.value = window.location.href;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            linkText.textContent = 'Link copied to clipboard!';
+        }
+
+        document.getElementById('htmlFile').addEventListener('change', handleFileUpload);
+        document.getElementById('cssFile').addEventListener('change', handleFileUpload);
+
+        function handleFileUpload() {
+            const htmlFileInput = document.getElementById('htmlFile');
+            const cssFileInput = document.getElementById('cssFile');
+            const previewFrame = document.getElementById('previewFrame');
+            const linkText = document.getElementById('linkText');
+
+            const htmlFile = htmlFileInput.files[0];
+            const cssFile = cssFileInput.files[0];
+
+            if (htmlFile) {
+                const htmlReader = new FileReader();
+                htmlReader.onload = function (e) {
+                    const htmlContent = e.target.result;
+
+                    let cssContent = '';
+                    if (cssFile) {
+                        const cssReader = new FileReader();
+                        cssReader.onload = function (e) {
+                            cssContent = `<style>${e.target.result}</style>`;
+                            previewFrame.srcdoc = `${htmlContent}${cssContent}`;
+                            linkText.textContent = 'No link generated yet.';
+                        };
+                        cssReader.readAsText(cssFile);
+                    } else {
+                        previewFrame.srcdoc = `${htmlContent}`;
+                        linkText.textContent = 'No link generated yet.';
+                    }
+                };
+                htmlReader.readAsText(htmlFile);
+            }
+        }
+    </script>
+</body>
+</html>
